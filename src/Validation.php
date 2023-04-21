@@ -27,7 +27,7 @@ class Validation
     /**
      * The translator to use for the exception message.
      *
-     * @var callable
+     * @var array
      */
     protected $translator = null;
 
@@ -73,7 +73,7 @@ class Validation
      * @param null|callable          $translator
      * @param []|array               $options
      */
-    public function __construct($validators = null, $translator = null, $options = [])
+    public function __construct($validators = null, ?array $translator = null, $options = [])
     {
         // Set the validators
         if (is_array($validators) || $validators instanceof \ArrayAccess) {
@@ -98,7 +98,11 @@ class Validation
     {
         $this->errors = [];
         $params = $request->getParams();
-        $params = array_merge((array) $request->getAttribute('routeInfo')[2], $params);
+        $routeInfo = [];
+        if ($request->getAttribute('routeInfo') && $request->getAttribute('routeInfo')[2]) {
+            $routeInfo = (array)$request->getAttribute('routeInfo')[2];
+        };
+        $params = array_merge((array) $routeInfo, $params);
         $this->validate($params, $this->validators);
 
         $request = $request->withAttribute($this->errors_name, $this->getErrors());
@@ -129,10 +133,7 @@ class Validation
                 try {
                     $validator->assert($param);
                 } catch (NestedValidationException $exception) {
-                    if ($this->translator) {
-                        $exception->setParam('translator', $this->translator);
-                    }
-                    $this->errors[implode('.', $actualKeys)] = $exception->getMessages();
+                    $this->errors[implode('.', $actualKeys)] = ($this->translator ? $exception->getMessages($this->translator) : $exception->getMessages());
                 }
             }
 
@@ -155,7 +156,7 @@ class Validation
             return $params;
         } else {
             $firstKey = array_shift($keys);
-            if ($this->isArrayLike($params) && array_key_exists($firstKey, $params)) {
+            if ($this->isArrayLike($params) && array_key_exists($firstKey, (array)$params)) {
                 $params = (array) $params;
                 $paramValue = $params[$firstKey];
 
@@ -221,9 +222,9 @@ class Validation
     /**
      * Get translator.
      *
-     * @return callable The translator.
+     * @return array The translator.
      */
-    public function getTranslator()
+    public function getTranslator() : ?array
     {
         return $this->translator;
     }
@@ -231,9 +232,9 @@ class Validation
     /**
      * Set translator.
      *
-     * @param callable $translator The translator.
+     * @param array $translator The translator.
      */
-    public function setTranslator($translator)
+    public function setTranslator(?array $translator) : void
     {
         $this->translator = $translator;
     }
