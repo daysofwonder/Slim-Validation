@@ -165,7 +165,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'username' => array(
-                '"davidepastore" must have a length between 1 and 5',
+                'length' => '"davidepastore" must have a length between 1 and 5',
               ),
             ),
           ),
@@ -187,7 +187,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'notExisting' => array(
-                'null must contain only letters (a-z)',
+                'alpha' => '`NULL` must contain only letters (a-z)',
               ),
             ),
           ),
@@ -202,7 +202,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
           array(
             array(
               'username' => v::alnum()->noWhitespace()->length(1, 20),
-              'age' => v::numeric()->positive()->between(1, 100),
+              'age' => v::numericVal()->positive()->between(1, 100),
             ),
             null,
             false,
@@ -212,16 +212,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
           array(
             array(
               'username' => v::alnum()->noWhitespace()->length(1, 5),
-              'age' => v::numeric()->positive()->between(1, 60),
+              'age' => v::numericVal()->positive()->between(1, 60),
             ),
             null,
             true,
             array(
               'username' => array(
-                '"davidepastore" must have a length between 1 and 5',
+                'length' => '"davidepastore" must have a length between 1 and 5',
               ),
               'age' => array(
-                '"89" must be less than or equal to 60',
+                'between' => '"89" must be between 1 and 60',
               ),
             ),
           ),
@@ -230,19 +230,15 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             array(
               'username' => v::alnum()->noWhitespace()->length(1, 5),
             ),
-            function ($message) {
-                $messages = [
-                  'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}}',
-                  '{{name}} must be a string' => '{{name}} deve essere una stringa',
-                  '{{name}} must have a length between {{minValue}} and {{maxValue}}' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}}',
-                ];
-
-                return $messages[$message];
-            },
+            [
+              'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}}',
+              '{{name}} must be a string' => '{{name}} deve essere una stringa',
+              'length' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}}',
+            ],
             true,
             array(
               'username' => array(
-                '"davidepastore" deve avere una dimensione di caratteri compresa tra 1 e 5',
+                'length' => '"davidepastore" deve avere una dimensione di caratteri compresa tra 1 e 5',
               ),
             ),
           ),
@@ -268,7 +264,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'username' => array(
-                '"jsonusername" must have a length between 1 and 5',
+                'length' => '"jsonusername" must have a length between 1 and 5',
               ),
             ),
             'JSON',
@@ -281,7 +277,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             array(
               'type' => v::alnum()->noWhitespace()->length(3, 8),
               'email' => array(
-                'id' => v::numeric()->positive()->between(1, 20),
+                'id' => v::numericVal()->positive()->between(1, 20),
                 'name' => v::alnum()->noWhitespace()->length(1, 5),
               ),
             ),
@@ -313,10 +309,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'type' => array(
-                '"emails" must have a length between 3 and 5',
+                'length' => '"emails" must have a length between 3 and 5',
               ),
               'email.name' => array(
-                '"rq3r" must have a length between 1 and 2',
+                'length' => '"rq3r" must have a length between 1 and 2',
               ),
             ),
             'JSON',
@@ -338,7 +334,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
               'email' => array(
                 'sub' => array(
                   'sub-sub' => array(
-                    'finally' => v::numeric()->positive()->between(1, 200),
+                    'finally' => v::numericVal()->positive()->between(1, 200),
                   ),
                 ),
               ),
@@ -366,7 +362,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
               'email' => array(
                 'sub' => array(
                   'sub-sub' => array(
-                    'finally' => v::numeric()->positive()->between(1, 200),
+                    'finally' => v::numericVal()->positive()->between(1, 200),
                   ),
                 ),
               ),
@@ -375,7 +371,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'email.sub.sub-sub.finally' => array(
-                '321 must be less than or equal to 200',
+                'between' => '321 must be between 1 and 200',
               ),
             ),
             'JSON',
@@ -407,12 +403,12 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'message.notification.title' => array(
-                'notificationTitle must be a string',
-                'notificationTitle must have a length greater than 1',
+                'notificationTitle' => 'notificationTitle must be a string',
+                'notificationTitle' => 'notificationTitle must have a length greater than or equal to 1',
               ),
               'message.notification.body' => array(
-                'notificationBody must be a string',
-                'notificationBody must have a length greater than 1',
+                'notificationBody' => 'notificationBody must be a string',
+                'notificationBody' => 'notificationBody must have a length greater than or equal to 1',
               ),
             ),
             'JSON',
@@ -443,7 +439,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'name' => array(
-                '"xmlusername" must have a length between 1 and 5',
+                'length' => '"xmlusername" must have a length between 1 and 5',
               ),
             ),
             'XML',
@@ -454,7 +450,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             array(
               'type' => v::alnum()->noWhitespace()->length(3, 8),
               'email' => array(
-                'id' => v::numeric()->positive()->between(1, 20),
+                'id' => v::numericVal()->positive()->between(1, 20),
                 'name' => v::alnum()->noWhitespace()->length(1, 5),
               ),
             ),
@@ -486,10 +482,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'type' => array(
-                '"emails" must have a length between 3 and 5',
+                'length' => '"emails" must have a length between 3 and 5',
               ),
               'email.name' => array(
-                '"rq3r" must have a length between 1 and 2',
+                'length' => '"rq3r" must have a length between 1 and 2',
               ),
             ),
             'XML',
@@ -511,7 +507,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
               'email' => array(
                 'sub' => array(
                   'sub-sub' => array(
-                    'finally' => v::numeric()->positive()->between(1, 200),
+                    'finally' => v::numericVal()->positive()->between(1, 200),
                   ),
                 ),
               ),
@@ -539,7 +535,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
               'email' => array(
                 'sub' => array(
                   'sub-sub' => array(
-                    'finally' => v::numeric()->positive()->between(1, 200),
+                    'finally' => v::numericVal()->positive()->between(1, 200),
                   ),
                 ),
               ),
@@ -548,7 +544,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'email.sub.sub-sub.finally' => array(
-                '"321" must be less than or equal to 200',
+                'between' => '"321" must be between 1 and 200',
               ),
             ),
             'XML',
@@ -572,7 +568,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->setupGet();
         $usernameValidator = v::alnum()->noWhitespace()->length(1, 20);
-        $ageValidator = v::numeric()->positive()->between(1, 100);
+        $ageValidator = v::numericVal()->positive()->between(1, 100);
         $expectedValidators = array(
           'username' => $usernameValidator,
           'age' => $ageValidator,
@@ -580,7 +576,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $mw = new Validation($expectedValidators);
 
         $newUsernameValidator = v::alnum()->noWhitespace()->length(1, 10);
-        $newAgeValidator = v::numeric()->positive()->between(1, 20);
+        $newAgeValidator = v::numericVal()->positive()->between(1, 20);
         $newValidators = array(
           'username' => $newUsernameValidator,
           'age' => $newAgeValidator,
@@ -598,10 +594,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $expectedErrors = array(
           'username' => array(
-            '"davidepastore" must have a length between 1 and 10',
+            'length' => '"davidepastore" must have a length between 1 and 10',
           ),
           'age' => array(
-            '"89" must be less than or equal to 20',
+            'between' => '"89" must be between 1 and 20',
           ),
         );
 
@@ -622,11 +618,17 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             $messages = [
               'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}}',
               '{{name}} must be a string' => '{{name}} deve essere una stringa',
-              '{{name}} must have a length between {{minValue}} and {{maxValue}}' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}}',
+              'length' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}}',
           ];
 
             return $messages[$message];
         };
+
+        $translator = [
+          'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}}',
+          '{{name}} must be a string' => '{{name}} deve essere una stringa',
+          'length' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}}',
+        ];
 
         $mw = new Validation($expectedValidators, $translator);
 
@@ -634,11 +636,17 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             $messages = [
               'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}} (nuovo)',
               '{{name}} must be a string' => '{{name}} deve essere una stringa (nuovo)',
-              '{{name}} must have a length between {{minValue}} and {{maxValue}}' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}} (nuovo)',
+              'length' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}} (nuovo)',
           ];
 
             return $messages[$message];
         };
+
+        $newTranslator = [
+          'These rules must pass for {{name}}' => 'Queste regole devono passare per {{name}} (nuovo)',
+          '{{name}} must be a string' => '{{name}} deve essere una stringa (nuovo)',
+          'length' => '{{name}} deve avere una dimensione di caratteri compresa tra {{minValue}} e {{maxValue}} (nuovo)',
+        ];
 
         $mw->setTranslator($newTranslator);
 
@@ -654,7 +662,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($hasErrors);
         $expectedErrors = array(
           'username' => array(
-            '"davidepastore" deve avere una dimensione di caratteri compresa tra 1 e 5 (nuovo)',
+            'length' => '"davidepastore" deve avere una dimensione di caratteri compresa tra 1 e 5 (nuovo)',
           ),
         );
         $this->assertEquals($expectedErrors, $errors);
@@ -714,7 +722,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             true,
             array(
               'routeParam' => array(
-                '"davidepastore" must have a length between 1 and 5',
+                'length' => '"davidepastore" must have a length between 1 and 5',
               ),
             ),
             ['routeParam' => 'davidepastore'],
