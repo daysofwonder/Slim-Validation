@@ -29,5 +29,5 @@ jobs:
       - name: PHP Unit tests
         run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
       
-      - name: Upload code coverage data
-        run: php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+      # - name: Upload code coverage data
+      #   run: php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover

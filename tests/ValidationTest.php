@@ -144,7 +144,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     /**
      * The validation provider.
      */
-    public function validationProvider()
+    public static function validationProvider()
     {
         return array(
           //Validation without errors
@@ -422,7 +422,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
           //XML validation without errors
           array(
             array(
-               'name' => v::alnum()->noWhitespace()->length(1, 15),
+                'name' => v::alnum()->noWhitespace()->length(1, 15),
             ),
             null,
             false,
@@ -433,7 +433,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
           //XML validation with errors
           array(
             array(
-               'name' => v::alnum()->noWhitespace()->length(1, 5),
+                'name' => v::alnum()->noWhitespace()->length(1, 5),
             ),
             null,
             true,
@@ -702,7 +702,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     /**
      * The validation provider for the route parameters.
      */
-    public function routeParamValidationProvider()
+    public static function routeParamValidationProvider()
     {
         return array(
           //Validation without errors
